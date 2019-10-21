@@ -26,13 +26,13 @@ library(lubridate)
 
 ## 2. download the dataset
 The dataset has been downloaded and stored in a `data` folder of the project.
-```{r}
+```{r, eval=FALSE}
 download.file(url = "https://github.com/rfordatascience/tidytuesday/blob/master/data/us_avg_tuition.xlsx?raw=true", destfile = "../data/us_avg_tuition.xlsx")
 ```
 
 ## 3. Read the data
 ```{r}
-raw <- readxl::read_excel("../data/us_avg_tuition.xlsx")
+raw <- readxl::read_excel("./data/us_avg_tuition.xlsx")
 ```
 
 ## 4. Explore the data a bit
