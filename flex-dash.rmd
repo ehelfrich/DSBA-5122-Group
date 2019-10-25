@@ -1,0 +1,102 @@
+---
+title: "Design Project Sample Dashboard"
+author: "Eric Helfrich, Derek Stanton, Karan Edikala"
+output: flexdashboard::flex_dashboard
+---
+
+```{r setup}
+library(flexdashboard)
+library(tidyverse)
+library(readxl)
+library(lubridate)
+```
+
+Column 1
+-------------------------------------
+    
+### Chart 1
+    
+```{r}
+# The original graph modified
+raw <- readxl::read_excel("./data/us_avg_tuition.xlsx")
+# tidy dataset
+mydata <- gather(raw, key = Year, value = Tuition, -State)
+
+# clean years to have for digit numbers
+mydata <- 
+    mydata %>% 
+    mutate(Year = str_sub(Year, start = 1, end = 4))
+
+mydata1 <-
+    mydata %>% 
+    select(State, Tuition) %>% 
+    group_by(State) %>% 
+    summarise(Mean_State = mean(Tuition)) %>% 
+    arrange(desc(Mean_State))
+
+# With Respect to the mean
+
+mydata2 <-
+    mydata %>% 
+    group_by(State) %>% 
+    mutate(Mean_State = mean(Tuition)) %>% 
+    ungroup() %>% 
+    mutate(AwayFromMean = Mean_State - mean(Mean_State)) %>% 
+    mutate(Category = ifelse(AwayFromMean < 0, "less than the mean", "higher than the mean")) %>% 
+    arrange(desc(AwayFromMean)) %>% 
+    select(State, AwayFromMean, Category) %>% 
+    distinct()
+
+theme_LPD <- function(){
+  theme_bw() +
+    theme(axis.text.x = element_text(size = 12, vjust = 1, hjust = 1),
+          axis.text.y = element_text(size = 12),
+          axis.title.x = element_text(size = 14, face = "plain"),             
+          axis.title.y = element_text(size = 14, face = "plain"),             
+          panel.grid.major.x = element_blank(),                                          
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.grid.major.y = element_blank(),  
+          plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+          plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+          legend.text = element_text(size = 12, face = "italic"),          
+          legend.title = element_blank(),                              
+          legend.position = c(0.8, 0.8))
+}
+
+
+ggplot(mydata2) +
+    geom_bar(aes(x = reorder(State, -AwayFromMean), y = AwayFromMean, 
+                 fill = Category),
+             stat = "identity", position = "dodge") +
+    geom_hline(yintercept = 0, linetype = 2) +
+    coord_flip() +
+    scale_fill_brewer() +
+    labs(x = "State", y = "Away from the mean tuition") +
+    theme_LPD()
+    
+```
+
+   
+Column 2
+-------------------------------------
+   
+### Chart 2
+
+```{r}
+mpg %>%
+  count(manufacturer) %>%
+  ggplot(aes(x = reorder(manufacturer, n), y = n)) +
+  geom_col() +
+  coord_flip()
+```   
+ 
+### Chart 3
+    
+```{r}
+mpg %>%
+  count(class) %>%
+  ggplot(aes(x = reorder(class, n), y = n)) +
+  geom_col() +
+  coord_flip()
+```
