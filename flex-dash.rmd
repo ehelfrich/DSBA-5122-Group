@@ -17,7 +17,7 @@ Column 1
     
 ### Chart 1
     
-```{r}
+```{r, fig.height=10, fig.width=10}
 # The graph and this code chunk are based off of the work by Paula Andrea Martinez's (@orchid00) Tidy Tuesday submission
 # https://orchid00.github.io/us_avg_tuition.html
 
@@ -54,10 +54,10 @@ mydata2 <-
 # Theme provided by Paula Andrea Martinez @orchid00
 theme_LPD <- function(){
   theme_bw() +
-    theme(axis.text.x = element_text(size = 8, vjust = 1, hjust = 1), # Reduce text size
-          axis.text.y = element_text(size = 8),
-          axis.title.x = element_text(size = 10, face = "plain"),             
-          axis.title.y = element_text(size = 10, face = "plain"),             
+    theme(axis.text.x = element_text(size = 10, vjust = 1, hjust = 1), # Reduce text size
+          axis.text.y = element_text(size = 10),
+          axis.title.x = element_text(size = 14, face = "plain"),             
+          axis.title.y = element_text(size = 14, face = "plain"),             
           panel.grid.major.x = element_blank(),                                          
           panel.grid.minor.x = element_blank(),
           panel.grid.minor.y = element_blank(),
@@ -77,7 +77,7 @@ ggplot(mydata2) +
     ylim(-6000, 6000) + # set ylimit so both sides of the graph are even
     coord_flip() +
     scale_fill_distiller(type="div", palette="PiYG") +
-    labs(x = "State", y = "Away from the mean tuition") +
+    labs(x = "State", y = "Difference in Tuition Compared to US Average (Dollars)") +
     theme_LPD()
     
 ```
