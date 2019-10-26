@@ -1,5 +1,5 @@
 ---
-title: "Design Project Sample Dashboard"
+title: "US Average Tuition Dashboard"
 author: "Eric Helfrich, Derek Stanton, Karan Edikala"
 output: flexdashboard::flex_dashboard
 ---
@@ -10,6 +10,7 @@ library(tidyverse)
 library(readxl)
 library(lubridate)
 library(RColorBrewer)
+library(usmap)
 ```
 
 Column 1
@@ -89,11 +90,34 @@ Column 2
 ### Chart 2
 
 ```{r}
-mpg %>%
-  count(manufacturer) %>%
-  ggplot(aes(x = reorder(manufacturer, n), y = n)) +
-  geom_col() +
-  coord_flip()
+# Input DF
+df = read_excel("data/us_avg_tuition.xlsx")
+# Tidying data
+tidydf = gather(df, key = Year, value = Tuition, -State)
+# Getting Just the year according to post
+tidydf = tidydf %>% 
+  mutate(Year = str_sub(Year, start = 1, end = 4))
+# Calculating mean tuition fo state
+tidydf = tidydf %>% 
+  select(State, Tuition) %>% 
+  group_by(State) %>% 
+  summarise(Mean_State = mean(Tuition)) %>% 
+  arrange(desc(Mean_State)) %>%
+  mutate(fips = fips(State))
+
+# Plot with usmap since we have a column named state
+plot_usmap(data = tidydf, values = "Mean_State") + 
+  scale_fill_distiller(palette = "Reds", direction = 1, name = "Tuition in Dollars" ) +
+  labs(title = "Average Tuition by State") +
+  theme(plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+          plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+          legend.position = "right")
+
+# Plotly
+# g = list(scope = 'usa', projection = list(type = 'albers usa'))
+# p = plot_geo(tidydf, locationmode = 'USA-states') %>%
+#  add_trace( z = ~Mean_State, locations = ~State, color = ~Mean_State, colors = 'Reds') %>%
+#  layout(geo = g)
 ```   
  
 ### Chart 3
