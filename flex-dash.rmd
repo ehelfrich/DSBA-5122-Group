@@ -145,5 +145,5 @@ p = ggplot(tidydf, aes(x=Year, y=mean_region, color=Region)) +
           plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
           legend.position = "right") +
   transition_reveal(Year)
-animate(p
+animate(p)
 ```
