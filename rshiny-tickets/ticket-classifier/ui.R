@@ -1,32 +1,21 @@
-#
-# This is the user-interface definition of a Shiny web application. You can
-# run the application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
-library(shiny)
-source("rshiny-tabs.R")
-
-# Define UI for application that draws a histogram
-shinyUI(fluidPage(
-  #Define Navbar
-  navbarPage(
-    "Ticket Classification",
-    # Sample Tab
-    sample_tab(),
-    # Tab to define the problem
-    tabPanel("Problem"),
-    # Show Raw Data
-    tabPanel("Raw Data"),
-    # Show Data Transformation
-    tabPanel("Data Transformation"),
-    # Show Feature Engineering
-    tabPanel("Feature Engineering"),
-    #Interactive ML solutions and their results
-    tabPanel("ML Solutions")
+shinyUI(dashboardPage(
+  dashboardHeader(
+    title = "Ticket Classifier"
+  ),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Business Case", tabName = "businesscase", icon = icon("dashboard")),
+      menuItem("Data Exploration", tabName = "dataexploration", icon = icon("search")),
+      menuItem("Feature Engineering", tabName = "featengineering", icon = icon("cogs")),
+      menuItem("Dimensionality Reduction", tabName = "dimreduction", icon = icon("coins")),
+      menuItem("Machine Learning", tabName = "machinelearning", icon = icon("brain"))
+    )
+  ),
+  dashboardBody(
+    tabItem(tabName = "businesscase"),
+    tabItem(tabName = "dataexploration"),
+    tabItem(tabName = "featengineering"),
+    tabItem(tabName = "dimreduction"),
+    tabItem(tabName = "machinelearning")
   )
-
 ))
