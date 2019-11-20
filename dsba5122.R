@@ -4,7 +4,7 @@ library(shinydashboard)
 
 ui <- dashboardPage(
   dashboardHeader(
-    title = "Okay"
+    title = "Ticket Classifier"
   ),
   dashboardSidebar(
     sidebarMenu(
