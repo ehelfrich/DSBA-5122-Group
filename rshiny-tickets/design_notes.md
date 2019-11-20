@@ -11,11 +11,12 @@ NavBar going over the top of the webpage with each tab.  The tabs will break dow
 
 This will detail the problem we are trying to resolve.
 
-## Data
+## Data Exploration
 
 This will show the raw data and were we got it.
 - Show sample of the dataframe
 - Show some summary stats (avg word count)
+- Distrbution of labels
 
 ## Feature Engineering
 - Remove stop words
@@ -29,4 +30,6 @@ This will show the raw data and were we got it.
 ## ML solutions
 - Show various ML algorithms with changeable inputs
 - Visualize the ML outputs and classification reports
+
+test
 
