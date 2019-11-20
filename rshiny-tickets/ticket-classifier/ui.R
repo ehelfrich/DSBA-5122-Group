@@ -44,7 +44,7 @@ shinyUI(dashboardPage(
             actionButton(inputId = "machinelearningrerun", label = "Run"),
             fluidRow(
               box(title = "boxes showing test tickets with their labels/predicted label"),
-              box(title = "Show confusion matrix with precision/recall/f1 scores for each of the labels")
+              box(title = "Shows confusion matrix with precision/recall/f1 scores for each of the labels")
              
             )
             )
