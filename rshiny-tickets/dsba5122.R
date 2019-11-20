@@ -9,7 +9,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Business Case", tabName = "businesscase", icon = icon("dashboard")),
-      menuItem("Data Exploration", tabName = "dataexploration", icon = icon("th")),
+      menuItem("Data Exploration", tabName = "dataexploration", icon = icon("search")),
       menuItem("Feature Engineering", tabName = "featengineering", icon = icon("th")),
       menuItem("Dimensionality Reduction", tabName = "dimreduction", icon = icon("th")),
       menuItem("Machine Learning", tabName = "machinelearning", icon = icon("th"))
