@@ -1,7 +1,5 @@
-vectors <- list("TF-IDF", "Count Vectorizer")
-feature <- list("UMAP", "TSNE")
-machinelearning <- list("Logistic Regression", "Random Forest")
-
+library(shiny)
+library(shinydashboard)
 shinyUI(dashboardPage(
   dashboardHeader(
     title = "Ticket Classifier"
