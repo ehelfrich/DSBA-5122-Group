@@ -1,3 +1,4 @@
+library(shinydashboard)
 vectors <- list("TF-IDF", "Count Vectorizer")
 feature <- list("UMAP", "TSNE")
 machinelearning <- list("Logistic Regression", "Random Forest")
@@ -48,6 +49,6 @@ shinyUI(dashboardPage(
              
             )
             )
-  ),
+  )
   )
 ))
