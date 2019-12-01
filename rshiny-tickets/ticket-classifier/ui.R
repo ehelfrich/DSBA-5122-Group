@@ -49,6 +49,6 @@ shinyUI(dashboardPage(
              
             )
             )
-  ),
+  )
   )
 ))
