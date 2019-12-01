@@ -6,6 +6,7 @@ library(caret)
 library(tm)
 
 
+
 data = read_csv('./rshiny-tickets/ticket-classifier/data/all_tickets.csv')
 
 # Filter ticket_type = 1 and drop unused columns

@@ -39,5 +39,6 @@ rsconnect/
 # Mac file
 *.DS_Store
 
-# Data Files
+
+#ignore csv files
 *.csv

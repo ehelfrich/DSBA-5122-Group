@@ -179,5 +179,3 @@ rf = train(x = as.matrix(dtm_train), y = factor(raw_reduced$category), method = 
 
 logreg = glmnet(dtm_train, factor(raw_reduced$category), family="multinomial")
 
-
-
