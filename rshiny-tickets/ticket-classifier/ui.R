@@ -21,9 +21,10 @@ shinyUI(dashboardPage(
     tabItem(h1("Business Case"), tabName = "businesscase", paste0("The business problem is that")),
     tabItem(h1("Data Exploration"), tabName = "dataexploration",
             fluidRow(
-              box(title = "Data Frame"),
-              box(title = "Summary Stats"),
-              box(title = "Category Distribution")
+              box(title = "Generate Data Set", actionButton("data_generate", "Generate")),
+              box(title = "Data Frame", dataTableOutput('df')),
+              box(title = "Summary Stats", tableOutput('token_summary')),
+              box(title = "Category Distribution", plotOutput('category_dist'))
             )),
     tabItem(h1("Feature Engineering"), tabName = "featengineering",
             checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),

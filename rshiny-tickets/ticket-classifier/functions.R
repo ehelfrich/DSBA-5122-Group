@@ -20,6 +20,8 @@ set.seed(100)
 
 # Load and reduce DataFrame 
 
+#set.seed(99)
+
 data = read_csv('./rshiny-tickets/ticket-classifier/data/all_tickets.csv')
 
 # Filter ticket_type = 1 and drop unused columns
@@ -39,8 +41,16 @@ head(raw)
 # Show Summary Stats
 token_summary = tokens %>%
   group_by(id) %>%
-  summarize(num_word = n(), num_char = sum(nchar(word))) #num_char does not include whitespace
-  
+  summarize(num_word = n(), num_char = sum(nchar(word))) %>% #num_char does not include whitespace
+  summarize(average_word_count = mean(num_word),
+            min_word_count = min(num_word),
+            max_word_count = max(num_word),
+            average_character_count = mean(num_char),
+            min_character_count = min(num_char),
+            max_character_count = max(num_char)) %>%
+  gather()
+token_summary
+
 # Plot Distribution of Labels
 
 raw %>%
