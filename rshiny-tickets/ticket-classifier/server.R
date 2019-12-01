@@ -72,4 +72,78 @@ shinyServer(function(input, output) {
   
   #### Feature Engineering ####
   
+  # Feature Engineering
+  feProcessing = reactive({
+ 
+    tokens = tokenizer()
+    if(input$stopwords){
+      tokens = tokens %>%
+        anti_join(stop_words, by = c("word" = "word"))
+    }
+    token_drop = tokens %>%
+      group_by(id) %>%
+      summarize(num_word = n(), num_char = sum(nchar(word))) %>%
+      filter(num_word < input$minwords)
+    
+    token_final = tokens %>%
+      anti_join(token_drop, by='id')
+    
+    return(token_final)
+  })
+  
+  # DTM Creation
+  vectorizerProcessing = reactive({
+    token_final = feProcessing()
+    
+    if(input$vectorizeframe == "Count Vectorizer"){
+      # Vectroize Count Vector
+      dtm = token_final %>%
+        count(id, word, sort = T) %>%
+        cast_dtm(document = id, term = word, value = n)
+    }
+    else if(input$vectorizeframe == "TF-IDF") {
+      # Vectorize TFIDF Vector
+      dtm = token_final %>%
+        count(id, word, sort = T) %>%
+        cast_dtm(document = id, term = word, value = n, weighting = tm::weightTfIdf)
+    }
+    else{
+      stop("Error: No Vectorizer selected")
+    }
+    
+    return(dtm)
+  })
+  
+  # Button to run FE and Plots
+  observeEvent(input$FE_run, {
+    tokens = feProcessing()
+    dtm = vectorizerProcessing()
+    
+    # Histogram
+    output$fe_hist = renderPlot({
+      tokens %>%
+        count(word, sort = T) %>%
+        ggplot(aes(x = reorder(word, n), y = n)) +
+          geom_col() +
+          coord_flip() + 
+          labs(x='', y='')
+    })
+    
+    # Word Cloud
+    output$fe_cloud = renderPlot({
+      tokens %>%
+        count(word, sort = TRUE) %>%
+        with(
+          wordcloud(
+            word, 
+            n,
+            scale = c(8, .3),
+            random.order = FALSE, 
+            max.words = 50, 
+            colors=brewer.pal(8,"Dark2")
+          )
+        )
+    })
+  })
+  
 })

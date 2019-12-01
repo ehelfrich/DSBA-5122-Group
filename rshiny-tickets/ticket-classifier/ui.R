@@ -27,20 +27,22 @@ shinyUI(dashboardPage(
               box(title = "Category Distribution", plotOutput('category_dist'))
             )),
     tabItem(h1("Feature Engineering"), tabName = "featengineering",
-            checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
-            actionButton(inputId = "stopwordsrerun", label= "Run"),
-            sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 4, max = 1000, step = 30, value = 100),
-            actionButton(inputId = "minwordsrerun", label= "Run"),
-            selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
-            actionButton(inputId= "vectorframererun", label = "Run")
-            ),
+            fluidPage(
+              box(title = "Parameters",
+                  checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
+                  sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 1, max = 500, step = 10, value = 50),
+                  selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
+                  actionButton(inputId= "FE_run", label = "Run")
+                ),
+              box(title = "Word Cloud", plotOutput('fe_cloud')),
+              box(title = "Word Counts", height = 600, plotOutput('fe_hist'))
+            )),
     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
             selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
             fluidRow(
-              box(title = "Show Data undergoing Dimensionality Reduction"),
-              box(title = "Show data on an interactive graph"),
-              box(title = "Show bars of the categories on the side of the data (x,y")
-            )  ),
+              box(title = "Parameters"),
+              box(title = "Plot")
+            )),
     tabItem(h1("Machine Learning"), tabName = "machinelearning",
             selectInput(inputId="machinelearning", label = "Select Machine Learning method: ", choices = machinelearning),
             actionButton(inputId = "machinelearningrerun", label = "Run"),
