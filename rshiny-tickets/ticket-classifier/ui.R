@@ -22,7 +22,7 @@ shinyUI(dashboardPage(
     tabItem(h1("Data Exploration"), tabName = "dataexploration",
             fluidRow(
               box(title = "Generate Data Set", actionButton("data_generate", "Generate")),
-              box(title = "Data Frame", dataTableOutput('df')),
+              box(title = "Data Frame", DT::dataTableOutput('df')),
               box(title = "Summary Stats", tableOutput('token_summary')),
               box(title = "Category Distribution", plotOutput('category_dist'))
             )),
