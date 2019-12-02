@@ -140,10 +140,10 @@ ggplot(data=as_tibble(idf_umap$layout), aes(x=V1, y=V2)) +
 
 # PCA/TSNE
 
-pca = prcomp(token_dtm_idf, scale.=T)
-pca50 = pca$rotation[,1:50]
+#pca = prcomp(token_dtm_idf, scale.=T)
+#pca50 = pca$rotation[,1:50]
 library(Rtsne)
-tsne50 = Rtsne(pca50, dims=2, perplexity=50, check_duplicates = F)
+tsne50 = Rtsne(token_dtm_idf, dims=2, initial_dims = 50, perplexity=50, check_duplicates = F)
 
 ggplot(data=as_tibble(tsne50$Y), aes(x=V1, y=V2)) +
   geom_point()

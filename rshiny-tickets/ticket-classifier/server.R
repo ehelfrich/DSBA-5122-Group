@@ -9,6 +9,7 @@ library(RColorBrewer)
 library(umap)
 library(splitstackshape)
 library(DT)
+library(Rtsne)
 
 ######################## Pre-App ####################################
 # Load and reduce DataFrame 
@@ -145,5 +146,48 @@ shinyServer(function(input, output) {
         )
     })
   })
+  
+  #### Dimensionality Reduction ####
+  
+  # Dimentionality Reduction Generation
+  gen = reactive({
+    dtm = vectorizerProcessing()
+    # UMAP
+    if(input$dimmethod == "UMAP") { 
+      custom.config = umap.defaults
+      custom.config$n_neighbors = input$umap__n_neighbors
+      custom.config$min_dist = input$umap__min_dist
+      umapObj = umap(as.matrix(dtm), custom.config)
+      return(umapObj)
+    }
+    # PCA/T-SNE
+    else if(input$dimmethod == "TSNE") {
+      tsneX = Rtsne(as.matrix(dtm), dims=2, initial_dims=input$pca__n_dims, perplexity=input$pca__perplexity, check_duplicates = F)
+      return(tsneX)
+    }
+  })
+  
+  # Action Button Dim Reduction
+  dim_action = eventReactive(input$umap_run, {
+    gen()
+  })
+  
+  # Plot Dimensionality Reduction
+  output$dim_plot = renderPlot({
+    dimObj = dim_action()
+    isolate(
+      if(input$dimmethod == "UMAP") {
+        ggplot(data=as_tibble(dimObj$layout), aes(x=V1, y=V2)) +
+          geom_point()
+      }
+      else if(input$dimmethod == "TSNE") {
+        ggplot(data=as_tibble(dimObj$Y), aes(x=V1, y=V2)) +
+          geom_point()
+      }
+    )
+  })
+
+
+  
   
 })

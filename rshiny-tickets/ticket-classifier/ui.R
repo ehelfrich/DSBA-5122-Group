@@ -40,8 +40,18 @@ shinyUI(dashboardPage(
     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
             selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
             fluidRow(
-              box(title = "Parameters"),
-              box(title = "Plot")
+              box(title = "Parameters",
+                  strong("UMAP"),
+                  sliderInput(inputId = "umap__n_neighbors", label = "nearest neighbors", min = 2, max = 50, step = 1, value = 15),
+                  sliderInput(inputId = "umap__min_dist", label = "Minimum Distance", min = 0.0, max = .99, step = .1, value = .25),
+                  br(),
+                  strong("PCA/T-SNE"),
+                  sliderInput(inputId = "pca__n_dims", label = "Number of PCA Dimensions", min = 2, max = 200, step = 2, value = 50),
+                  sliderInput(inputId = "pca__perplexity", label = "Perplexity", min = 10, max = 100, step = 5, value = 50),
+                  br(),
+                  actionButton(inputId="umap_run", label = "Run")
+                  ),
+              box(title = "Plot", plotOutput("dim_plot"))
             )),
     tabItem(h1("Machine Learning"), tabName = "machinelearning",
             selectInput(inputId="machinelearning", label = "Select Machine Learning method: ", choices = machinelearning),
