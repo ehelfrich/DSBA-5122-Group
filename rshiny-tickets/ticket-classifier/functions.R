@@ -120,7 +120,7 @@ token_sparse = token_final %>%
 token_dtm = token_final %>%
   count(id, word, sort = T) %>%
   cast_dtm(document = id, term = word, value = n)
-  
+
 # Vectorize TFIDF Vector
 token_dtm_idf = token_final %>%
   count(id, word, sort = T) %>%
@@ -193,4 +193,3 @@ identical(rownames(dtm_train), as.character(raw_reduced$id)) # Test to see if ro
 rf = train(x = as.matrix(dtm_train), y = factor(raw_reduced$category), method = "ranger", num.trees=10, trControl = trainControl(method = "oob"))
 
 logreg = glmnet(dtm_train, factor(raw_reduced$category), family="multinomial")
-

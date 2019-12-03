@@ -78,7 +78,7 @@ shinyServer(function(input, output) {
   
   # Feature Engineering
   feProcessing = reactive({
- 
+    
     tokens = tokenizer()
     if(input$stopwords){
       tokens = tokens %>%
@@ -128,9 +128,9 @@ shinyServer(function(input, output) {
       tokens %>%
         count(word, sort = T) %>%
         ggplot(aes(x = reorder(word, n), y = n)) +
-          geom_col() +
-          coord_flip() + 
-          labs(x='', y='')
+        geom_col() +
+        coord_flip() + 
+        labs(x='', y='')
     })
     
     # Word Cloud
@@ -209,7 +209,7 @@ shinyServer(function(input, output) {
   
   # Model Metrics
   output$metrics = renderText({
-  model = ml_model()
-  print(model)
+    model = ml_model()
+    print(model)
   })
 })
