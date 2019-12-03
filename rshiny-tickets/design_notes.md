@@ -45,3 +45,5 @@ This will show the raw data and were we got it.
 - boxes showing test tickets with their labels/predicted label (button to randomly choose)
 	- extra: ability to type in a sample ticket and see what the label would be?
 - Show confusion matrix with precision/recall/f1 scores for each of the labels
+
+- Export data/model - include findings

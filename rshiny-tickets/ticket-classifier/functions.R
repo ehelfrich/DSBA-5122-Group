@@ -20,6 +20,8 @@ set.seed(100)
 
 # Load and reduce DataFrame 
 
+#set.seed(99)
+
 data = read_csv('./rshiny-tickets/ticket-classifier/data/all_tickets.csv')
 
 # Filter ticket_type = 1 and drop unused columns
@@ -39,8 +41,16 @@ head(raw)
 # Show Summary Stats
 token_summary = tokens %>%
   group_by(id) %>%
-  summarize(num_word = n(), num_char = sum(nchar(word))) #num_char does not include whitespace
-  
+  summarize(num_word = n(), num_char = sum(nchar(word))) %>% #num_char does not include whitespace
+  summarize(average_word_count = mean(num_word),
+            min_word_count = min(num_word),
+            max_word_count = max(num_word),
+            average_character_count = mean(num_char),
+            min_character_count = min(num_char),
+            max_character_count = max(num_char)) %>%
+  gather()
+token_summary
+
 # Plot Distribution of Labels
 
 raw %>%
@@ -130,10 +140,10 @@ ggplot(data=as_tibble(idf_umap$layout), aes(x=V1, y=V2)) +
 
 # PCA/TSNE
 
-pca = prcomp(token_dtm_idf, scale.=T)
-pca50 = pca$rotation[,1:50]
+#pca = prcomp(token_dtm_idf, scale.=T)
+#pca50 = pca$rotation[,1:50]
 library(Rtsne)
-tsne50 = Rtsne(pca50, dims=2, perplexity=50, check_duplicates = F)
+tsne50 = Rtsne(token_dtm_idf, dims=2, initial_dims = 50, perplexity=50, check_duplicates = F)
 
 ggplot(data=as_tibble(tsne50$Y), aes(x=V1, y=V2)) +
   geom_point()
@@ -148,13 +158,18 @@ x = token_final %>% distinct(id, .keep_all = T) %>% select(-word)
 
 logreg = train(x = token_dtm_idf, y = factor(x$category), method = "svmLinear3", family="multinomial")
 
-logreg = glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial")
+logreg = glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial", maxit = 1000)
+glm.fit = glm(as.matrix(token_dtm_idf), factor(x$category), family="multinomial")
+#cv.fit = cv.glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial", maxit = 1000, nfolds = 3)
+#predict(cv.fit, as.matrix(token_dtm_idf), type = 'class', s = "lambda.min")
 
 # Random Forest
 
 x = token_final %>% distinct(id, .keep_all = T) %>% select(-word)
 
-rf = train(x = as.matrix(token_dtm_idf), y = factor(x$category), method = "ranger", num.trees=10, trControl = trainControl(method = "oob"))
+ctrl = trainControl(method = 'cv', number=3, verboseIter = T)
+
+rf = train(x = as.matrix(token_dtm_idf), y = factor(x$category), method = "ranger", num.trees=3, trControl = ctrl)
 
 
 # Text2Vec
