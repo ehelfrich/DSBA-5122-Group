@@ -22,7 +22,7 @@ shinyUI(dashboardPage(
       tabItem(h1("Data Exploration"), tabName = "dataexploration",
               fluidRow(
                 box(title = "Generate Data Set", actionButton("data_generate", "Generate")),
-                box(title = "Data Frame", DT::dataTableOutput('df')),
+                box(title = "Data Frame", dataTableOutput('df')),
                 box(title = "Summary Stats", tableOutput('token_summary')),
                 box(title = "Category Distribution", plotOutput('category_dist'))
               )),
@@ -34,7 +34,6 @@ shinyUI(dashboardPage(
                     selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
                     actionButton(inputId= "FE_run", label = "Run")
                 ),
-<<<<<<< HEAD
                 box(title = "Word Cloud", plotOutput('fe_cloud')),
                 box(title = "Word Counts", height = 600, plotOutput('fe_hist'))
               )),
@@ -55,47 +54,16 @@ shinyUI(dashboardPage(
                 box(title = "Plot", plotOutput("dim_plot"))
               )),
       tabItem(h1("Machine Learning"), tabName = "machinelearning",
-              selectInput(inputId="machinelearning", label = "Select Machine Learning method: ", choices = machinelearning),
-              actionButton(inputId = "machinelearningrerun", label = "Run"),
               fluidRow(
-                box(title = "boxes showing test tickets with their labels/predicted label"),
-                box(title = "Shows confusion matrix with precision/recall/f1 scores for each of the labels")
+                box(title = "Random Forest Hyperparameters",
+                    sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
+                    actionButton(inputId = "rf_run", label = "Run")
+                ),
+                box(title = "Model Metrics", textOutput("metrics")),
+                box(title = "Confustion Matrix")
                 
               )
       )
     )
-=======
-              box(title = "Word Cloud", plotOutput('fe_cloud')),
-              box(title = "Word Counts", height = 600, plotOutput('fe_hist'))
-            )),
-    tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
-            selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
-            fluidRow(
-              box(title = "Parameters",
-                  strong("UMAP"),
-                  sliderInput(inputId = "umap__n_neighbors", label = "nearest neighbors", min = 2, max = 50, step = 1, value = 15),
-                  sliderInput(inputId = "umap__min_dist", label = "Minimum Distance", min = 0.0, max = .99, step = .1, value = .25),
-                  br(),
-                  strong("PCA/T-SNE"),
-                  sliderInput(inputId = "pca__n_dims", label = "Number of PCA Dimensions", min = 2, max = 200, step = 2, value = 50),
-                  sliderInput(inputId = "pca__perplexity", label = "Perplexity", min = 10, max = 100, step = 5, value = 50),
-                  br(),
-                  actionButton(inputId="umap_run", label = "Run")
-                  ),
-              box(title = "Plot", plotOutput("dim_plot"))
-            )),
-    tabItem(h1("Machine Learning"), tabName = "machinelearning",
-            fluidRow(
-              box(title = "Random Forest Hyperparameters",
-                  sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
-                  actionButton(inputId = "rf_run", label = "Run")
-              ),
-              box(title = "Model Metrics", textOutput("metrics")),
-              box(title = "Confustion Matrix")
-             
-            )
-            )
-  )
->>>>>>> 751d00ead152a264fd1d361afd712661468970ff
   )
 ))
