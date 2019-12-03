@@ -10,6 +10,7 @@ library(umap)
 library(splitstackshape)
 library(DT)
 library(Rtsne)
+library(glmnet)
 
 ######################## Pre-App ####################################
 # Load and reduce DataFrame 
@@ -27,6 +28,8 @@ sampleData = function(){
   reduced = stratified(data, "category", .1)
   return(reduced)
 }
+
+
 
 ######################## Shiny Server ###############################
 shinyServer(function(input, output) { 
@@ -148,7 +151,6 @@ shinyServer(function(input, output) {
   })
   
   #### Dimensionality Reduction ####
-  
   # Dimentionality Reduction Generation
   gen = reactive({
     dtm = vectorizerProcessing()
@@ -186,8 +188,28 @@ shinyServer(function(input, output) {
       }
     )
   })
-
-
   
+  #### Machine Learning ####
+  # Model Run
+  ml_model = reactive({
+    isolate({
+      dtm = vectorizerProcessing()
+      features = feProcessing()
+      x = features %>% distinct(id, .keep_all = T) %>% select(-word)
+      ctrl = trainControl(method = 'cv', number=3, verboseIter = T)
+      rf = train(x = as.matrix(dtm), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
+    })
+    return(rf)
+  })
   
+  # Action Button ML Run
+  ml_action = observeEvent(input$rf_run, {
+    ml_model()
+  })
+  
+  # Model Metrics
+  output$metrics = renderText({
+  model = ml_model()
+  print(model)
+  })
 })

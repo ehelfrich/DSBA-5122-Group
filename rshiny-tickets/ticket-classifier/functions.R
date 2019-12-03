@@ -158,13 +158,18 @@ x = token_final %>% distinct(id, .keep_all = T) %>% select(-word)
 
 logreg = train(x = token_dtm_idf, y = factor(x$category), method = "svmLinear3", family="multinomial")
 
-logreg = glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial")
+logreg = glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial", maxit = 1000)
+glm.fit = glm(as.matrix(token_dtm_idf), factor(x$category), family="multinomial")
+#cv.fit = cv.glmnet(as.matrix(token_dtm_idf), factor(x$category), family="multinomial", maxit = 1000, nfolds = 3)
+#predict(cv.fit, as.matrix(token_dtm_idf), type = 'class', s = "lambda.min")
 
 # Random Forest
 
 x = token_final %>% distinct(id, .keep_all = T) %>% select(-word)
 
-rf = train(x = as.matrix(token_dtm_idf), y = factor(x$category), method = "ranger", num.trees=10, trControl = trainControl(method = "oob"))
+ctrl = trainControl(method = 'cv', number=3, verboseIter = T)
+
+rf = train(x = as.matrix(token_dtm_idf), y = factor(x$category), method = "ranger", num.trees=3, trControl = ctrl)
 
 
 # Text2Vec

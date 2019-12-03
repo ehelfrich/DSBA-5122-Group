@@ -54,11 +54,13 @@ shinyUI(dashboardPage(
               box(title = "Plot", plotOutput("dim_plot"))
             )),
     tabItem(h1("Machine Learning"), tabName = "machinelearning",
-            selectInput(inputId="machinelearning", label = "Select Machine Learning method: ", choices = machinelearning),
-            actionButton(inputId = "machinelearningrerun", label = "Run"),
             fluidRow(
-              box(title = "boxes showing test tickets with their labels/predicted label"),
-              box(title = "Shows confusion matrix with precision/recall/f1 scores for each of the labels")
+              box(title = "Random Forest Hyperparameters",
+                  sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
+                  actionButton(inputId = "rf_run", label = "Run")
+              ),
+              box(title = "Model Metrics", textOutput("metrics")),
+              box(title = "Confustion Matrix")
              
             )
             )
