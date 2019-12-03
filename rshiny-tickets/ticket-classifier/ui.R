@@ -1,9 +1,13 @@
 library(shinydashboard)
+library(shinythemes)
+library(devtools)
+library(htmlwidgets)
 vectors <- list("TF-IDF", "Count Vectorizer")
 feature <- list("UMAP", "TSNE")
 machinelearning <- list("Logistic Regression", "Random Forest")
 
-shinyUI(dashboardPage(
+shinyUI(
+  dashboardPage(skin = "yellow",
   dashboardHeader(
     title = "Ticket Classifier"
   ),
@@ -21,21 +25,27 @@ shinyUI(dashboardPage(
     tabItem(h1("Business Case"), tabName = "businesscase", paste0("The business problem is that")),
     tabItem(h1("Data Exploration"), tabName = "dataexploration",
             fluidRow(
-              box(title = "Generate Data Set", actionButton("data_generate", "Generate")),
-              box(title = "Data Frame", dataTableOutput('df')),
-              box(title = "Summary Stats", tableOutput('token_summary')),
-              box(title = "Category Distribution", plotOutput('category_dist'))
+              column(2, actionButton("data_generate", "Generate Data Set")
+            )),
+            fluidRow(
+              box(width = 6, title = "Data Frame", dataTableOutput('df'), collapsible = T),
+              box(width = 6, title = "Summary Stats", tableOutput('token_summary')),
+              box(width = 6, title = "Category Distribution", plotOutput('category_dist'))
             )),
     tabItem(h1("Feature Engineering"), tabName = "featengineering",
-            fluidPage(
-              box(title = "Parameters",
+            fluidRow(
+              box(title = "Parameters", height = 500,
                   checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
                   sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 1, max = 500, step = 10, value = 50),
                   selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
                   actionButton(inputId= "FE_run", label = "Run")
                 ),
-              box(title = "Word Cloud", plotOutput('fe_cloud')),
-              box(title = "Word Counts", height = 600, plotOutput('fe_hist'))
+              box(width = 6,title = "Word Counts", height = 500, plotOutput('fe_hist')),
+              box(title = "Word Cloud"
+                  , status = "primary", solidHeader = F
+                  , collapsible = T, width = 12
+                  , column( 12,align="center" , plotOutput('fe_cloud'))) 
+             # box(title = "Word Cloud", column(8, align ="center", plotOutput('fe_cloud'))),
             )),
     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
             selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
@@ -51,7 +61,7 @@ shinyUI(dashboardPage(
                   br(),
                   actionButton(inputId="umap_run", label = "Run")
                   ),
-              box(title = "Plot", plotOutput("dim_plot"))
+              box(title = "Plot", plotOutput("dim_plot"), height = 578)
             )),
     tabItem(h1("Machine Learning"), tabName = "machinelearning",
             fluidRow(
