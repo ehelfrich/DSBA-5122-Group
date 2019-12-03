@@ -50,7 +50,7 @@ shinyUI(
     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
             selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
             fluidRow(
-              box(title = "Parameters",
+              box(title = "Parameters", width = 4, 
                   strong("UMAP"),
                   sliderInput(inputId = "umap__n_neighbors", label = "nearest neighbors", min = 2, max = 50, step = 1, value = 15),
                   sliderInput(inputId = "umap__min_dist", label = "Minimum Distance", min = 0.0, max = .99, step = .1, value = .25),
@@ -61,7 +61,7 @@ shinyUI(
                   br(),
                   actionButton(inputId="umap_run", label = "Run")
                   ),
-              box(title = "Plot", plotOutput("dim_plot"), height = 578)
+              box(title = "Plot", plotOutput("dim_plot"), height = 578, width = 8)
             )),
     tabItem(h1("Machine Learning"), tabName = "machinelearning",
             fluidRow(
