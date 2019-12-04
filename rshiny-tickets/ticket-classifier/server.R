@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
   data_reduced = eventReactive(input$data_generate, {
     df = sampleData()
     return(df)
-  })
+  }, ignoreNULL = F)
   
   tokenizer = reactive({
     df = data_reduced()
@@ -204,13 +204,13 @@ shinyServer(function(input, output) {
   })
   
   # Action Button ML Run
-  ml_action = observeEvent(input$rf_run, {
+  ml_action = eventReactive(input$rf_run, {
     ml_model()
   })
   
   # Model Metrics
   output$metrics = renderText({
-  model = ml_model()
+  model = ml_action()
   print(model)
   })
 })
