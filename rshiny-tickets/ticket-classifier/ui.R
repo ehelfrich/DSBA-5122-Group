@@ -21,7 +21,7 @@ shinyUI(
     )
   ),
   dashboardBody(
-<<<<<<< HEAD
+
     tabItems(
       tabItem(h1("Business Case"), tabName = "businesscase", paste0("The business problem is that")),
       tabItem(h1("Data Exploration"), tabName = "dataexploration",
@@ -70,7 +70,7 @@ shinyUI(
               )
       )
     )
-=======
+
   tabItems(
     tabItem(h1("Business Case"), tabName = "businesscase", paste0("The business problem is that")),
     tabItem(h1("Data Exploration"), tabName = "dataexploration",
@@ -125,6 +125,6 @@ shinyUI(
             )
             )
   )
->>>>>>> 1e943f0b34548dfc3de2157c1f454485a64be443
+
   )
 ))
