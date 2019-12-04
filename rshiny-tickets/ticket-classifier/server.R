@@ -10,6 +10,7 @@ library(umap)
 library(splitstackshape)
 library(DT)
 library(Rtsne)
+library(plotly)
 library(glmnet)
 
 ######################## Pre-App ####################################
@@ -66,7 +67,7 @@ shinyServer(function(input, output) {
   
   output$category_dist = renderPlot({  
     tokens = tokenizer()
-    tokens %>%
+      tokens %>%
       count(category) %>%
       add_row(category = 2, n = 0, .before = 3) %>% # add in category 2 since it has 0 tickets
       ggplot(aes(x=factor(category), y=n)) +
