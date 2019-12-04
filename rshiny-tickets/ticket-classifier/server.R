@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
   data_reduced = eventReactive(input$data_generate, {
     df = sampleData()
     return(df)
-  })
+  }, ignoreNULL = F)
   
   tokenizer = reactive({
     df = data_reduced()
