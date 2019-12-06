@@ -24,35 +24,44 @@ data = data %>%
   select(body, category) %>%
   mutate(id = row_number())
 
+# Split off Test Set at app start
+test_data = stratified(data, "category", .05)
+train_data = data %>%
+  anti_join(test_data, by = c("id" = "id"))
+
 # Global Functions
-sampleData = function(){
-  reduced = stratified(data, "category", .1)
+sampleData = function(target_data){
+  reduced = stratified(target_data, "category", .2)
   return(reduced)
 }
-
-
 
 ######################## Shiny Server ###############################
 shinyServer(function(input, output) { 
   
   #### Data Exploration ####
   data_reduced = eventReactive(input$data_generate, {
-    df = sampleData()
-    return(df)
+    df_train = sampleData(train_data)
+    df_test = sampleData(test_data)
+    return(list(df_train, df_test))
   }, ignoreNULL = F)
   
   tokenizer = reactive({
     df = data_reduced()
-    my_tokens = df %>%
+    df_train = df[[1]]
+    df_test = df[[1]]
+    train_tokens = df_train %>%
       unnest_tokens(output = word, input = body)
-    return(my_tokens)
+    test_tokens = df_test %>%
+      unnest_tokens(output = word, input = body)
+    return(list(train_tokens, test_tokens))
   })
   
-  output$df = DT::renderDataTable({data_reduced()})
+  output$df = DT::renderDataTable({data_reduced()[[1]]})
   
   output$token_summary = renderTable({
     tokens = tokenizer()
-    tokens %>%
+    train_tokens = tokens[[1]]
+    train_tokens %>%
       group_by(id) %>%
       summarize(num_word = n(), num_char = sum(nchar(word))) %>% #num_char does not include whitespace
       summarize(average_word_count = mean(num_word),
@@ -67,7 +76,8 @@ shinyServer(function(input, output) {
   
   output$category_dist = renderPlot({  
     tokens = tokenizer()
-      tokens %>%
+    train_tokens = tokens[[1]]
+    train_tokens %>%
       count(category) %>%
       add_row(category = 2, n = 0, .before = 3) %>% # add in category 2 since it has 0 tickets
       ggplot(aes(x=factor(category), y=n)) +
@@ -79,36 +89,53 @@ shinyServer(function(input, output) {
   
   # Feature Engineering
   feProcessing = reactive({
- 
     tokens = tokenizer()
+    train_tokens = tokens[[1]]
+    test_tokens = tokens[[2]]
     if(input$stopwords){
-      tokens = tokens %>%
+      train_tokens = train_tokens %>%
+        anti_join(stop_words, by = c("word" = "word"))
+      test_tokens = test_tokens %>%
         anti_join(stop_words, by = c("word" = "word"))
     }
-    token_drop = tokens %>%
+    token_drop_train = train_tokens %>%
+      group_by(id) %>%
+      summarize(num_word = n(), num_char = sum(nchar(word))) %>%
+      filter(num_word < input$minwords)
+    token_drop_test = train_tokens %>%
       group_by(id) %>%
       summarize(num_word = n(), num_char = sum(nchar(word))) %>%
       filter(num_word < input$minwords)
     
-    token_final = tokens %>%
-      anti_join(token_drop, by='id')
+    token_final_train = train_tokens %>%
+      anti_join(token_drop_train, by='id')
+    token_final_test = train_tokens %>%
+      anti_join(token_drop_test, by='id')
     
-    return(token_final)
+    return(list(token_final_train, token_final_test))
   })
   
   # DTM Creation
   vectorizerProcessing = reactive({
     token_final = feProcessing()
+    token_final_train = token_final[[1]]
+    token_final_test = token_final[[2]]
     
     if(input$vectorizeframe == "Count Vectorizer"){
       # Vectroize Count Vector
-      dtm = token_final %>%
+      dtm_train = token_final_train %>%
+        count(id, word, sort = T) %>%
+        cast_dtm(document = id, term = word, value = n)
+      dtm_test = token_final_test %>%
         count(id, word, sort = T) %>%
         cast_dtm(document = id, term = word, value = n)
     }
     else if(input$vectorizeframe == "TF-IDF") {
       # Vectorize TFIDF Vector
-      dtm = token_final %>%
+      dtm_train = token_final_train %>%
+        count(id, word, sort = T) %>%
+        cast_dtm(document = id, term = word, value = n, weighting = tm::weightTfIdf)
+      dtm_test = token_final_test %>%
         count(id, word, sort = T) %>%
         cast_dtm(document = id, term = word, value = n, weighting = tm::weightTfIdf)
     }
@@ -116,13 +143,13 @@ shinyServer(function(input, output) {
       stop("Error: No Vectorizer selected")
     }
     
-    return(dtm)
+    return(list(dtm_train, dtm_test))
   })
   
   # Button to run FE and Plots
   observeEvent(input$FE_run, {
-    tokens = feProcessing()
-    dtm = vectorizerProcessing()
+    tokens = feProcessing()[[1]]
+    # dtm = vectorizerProcessing()[[1]]
     
     # Histogram
     output$fe_hist = renderPlot({
@@ -154,7 +181,7 @@ shinyServer(function(input, output) {
   #### Dimensionality Reduction ####
   # Dimentionality Reduction Generation
   gen = reactive({
-    dtm = vectorizerProcessing()
+    dtm = vectorizerProcessing()[[1]]
     # UMAP
     if(input$dimmethod == "UMAP") { 
       custom.config = umap.defaults
@@ -194,13 +221,18 @@ shinyServer(function(input, output) {
   # Model Run
   ml_model = reactive({
     isolate({
-      dtm = vectorizerProcessing()
-      features = feProcessing()
+      dtm_train = vectorizerProcessing()[[1]]
+      features = feProcessing()[[1]]
       x = features %>% distinct(id, .keep_all = T) %>% select(-word)
       ctrl = trainControl(method = 'cv', number=3, verboseIter = T)
-      rf = train(x = as.matrix(dtm), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
+      rf = train(x = as.matrix(dtm_train), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
     })
     return(rf)
+  })
+  
+  # Process Test Set using same FE settings
+  test_processing = reactive({
+    dtm = vectorizerProcessing()[[2]]
   })
   
   # Action Button ML Run
@@ -211,6 +243,8 @@ shinyServer(function(input, output) {
   # Model Metrics
   output$metrics = renderText({
   model = ml_action()
-  print(model)
+  test_data_dtm = test_processing()
+  y_pred = predict(model, as.matrix(test_data_dtm))
+  y_pred
   })
 })
