@@ -25,13 +25,13 @@ data = data %>%
   mutate(id = row_number())
 
 # Split off Test Set at app start
-test_data = stratified(data, "category", .05)
+test_data = stratified(data, "category", .01)
 train_data = data %>%
   anti_join(test_data, by = c("id" = "id"))
 
 # Global Functions
 sampleData = function(target_data){
-  reduced = stratified(target_data, "category", .15)
+  reduced = stratified(target_data, "category", .10)
   return(reduced)
 }
 
@@ -41,7 +41,7 @@ shinyServer(function(input, output) {
   #### Data Exploration ####
   data_reduced = eventReactive(input$data_generate, {
     df_train = sampleData(train_data)
-    df_test = sampleData(test_data)
+    df_test = test_data
     return(list(df_train, df_test))
   }, ignoreNULL = F)
   
@@ -250,5 +250,12 @@ shinyServer(function(input, output) {
     conf_matrix = confusionMatrix(y_pred, factor(x$category))
     conf_matrix
     })
+  })
+  
+  # Plot Model
+  output$ml_plot = renderPlot({
+    model = ml_action()
+    #browser()
+    plot(model)
   })
 })

@@ -70,7 +70,7 @@ shinyUI(
                   actionButton(inputId = "rf_run", label = "Run")
               ),
               box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
-              box(title = "Plot")
+              box(title = "Plot", plotOutput("ml_plot"))
              
             )
             )
