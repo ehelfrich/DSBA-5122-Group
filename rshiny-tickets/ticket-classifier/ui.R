@@ -28,7 +28,7 @@ shinyUI(
               column(2, actionButton("data_generate", "Generate Data Set")
             )),
             fluidRow(
-              box(width = 6, title = "Data Frame", DT::dataTableOutput('df'), collapsible = T),
+              box(width = 6, title = "Data Frame", dataTableOutput('df'), collapsible = T),
               box(width = 6, title = "Summary Stats", tableOutput('token_summary')),
               box(width = 6, title = "Category Distribution", plotOutput('category_dist'))
             )),
