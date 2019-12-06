@@ -25,13 +25,13 @@ data = data %>%
   mutate(id = row_number())
 
 # Split off Test Set at app start
-test_data = stratified(data, "category", .10)
+test_data = stratified(data, "category", .05)
 train_data = data %>%
   anti_join(test_data, by = c("id" = "id"))
 
 # Global Functions
 sampleData = function(target_data){
-  reduced = stratified(target_data, "category", .50)
+  reduced = stratified(target_data, "category", .15)
   return(reduced)
 }
 
@@ -220,13 +220,11 @@ shinyServer(function(input, output) {
   #### Machine Learning ####
   # Model Run
   ml_model = reactive({
-    isolate({
       dtm_train = vectorizerProcessing()[[1]]
       features = feProcessing()[[1]]
       x = features %>% distinct(id, .keep_all = T) %>% select(-word)
       ctrl = trainControl(method = 'cv', number=3, verboseIter = F)
       rf = train(x = as.matrix(dtm_train), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
-    })
     return(rf)
   })
   
@@ -243,6 +241,7 @@ shinyServer(function(input, output) {
   # Model CM
   output$cm = renderPrint({
     model = ml_action()
+    isolate({
     features = feProcessing()[[2]]
     x = features %>% distinct(id, .keep_all = T) %>% select(-word)
     test_data_dtm = test_processing()
@@ -250,5 +249,6 @@ shinyServer(function(input, output) {
     #browser()
     conf_matrix = confusionMatrix(y_pred, factor(x$category))
     conf_matrix
+    })
   })
 })
