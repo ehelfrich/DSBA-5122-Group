@@ -36,7 +36,7 @@ shinyUI(
             fluidRow(
               box(title = "Parameters", height = 500,
                   checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
-                  sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 1, max = 500, step = 10, value = 50),
+                  sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
                   selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
                   actionButton(inputId= "FE_run", label = "Run")
                 ),
@@ -69,8 +69,8 @@ shinyUI(
                   sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
                   actionButton(inputId = "rf_run", label = "Run")
               ),
-              box(title = "Model Metrics", textOutput("metrics")),
-              box(title = "Confustion Matrix")
+              box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
+              box(title = "Plot", plotOutput("ml_plot"))
              
             )
             )

@@ -25,13 +25,13 @@ data = data %>%
   mutate(id = row_number())
 
 # Split off Test Set at app start
-test_data = stratified(data, "category", .05)
+test_data = stratified(data, "category", .01)
 train_data = data %>%
   anti_join(test_data, by = c("id" = "id"))
 
 # Global Functions
 sampleData = function(target_data){
-  reduced = stratified(target_data, "category", .2)
+  reduced = stratified(target_data, "category", .10)
   return(reduced)
 }
 
@@ -41,7 +41,7 @@ shinyServer(function(input, output) {
   #### Data Exploration ####
   data_reduced = eventReactive(input$data_generate, {
     df_train = sampleData(train_data)
-    df_test = sampleData(test_data)
+    df_test = test_data
     return(list(df_train, df_test))
   }, ignoreNULL = F)
   
@@ -220,13 +220,11 @@ shinyServer(function(input, output) {
   #### Machine Learning ####
   # Model Run
   ml_model = reactive({
-    isolate({
       dtm_train = vectorizerProcessing()[[1]]
       features = feProcessing()[[1]]
       x = features %>% distinct(id, .keep_all = T) %>% select(-word)
-      ctrl = trainControl(method = 'cv', number=3, verboseIter = T)
+      ctrl = trainControl(method = 'cv', number=3, verboseIter = F)
       rf = train(x = as.matrix(dtm_train), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
-    })
     return(rf)
   })
   
@@ -240,11 +238,24 @@ shinyServer(function(input, output) {
     ml_model()
   })
   
-  # Model Metrics
-  output$metrics = renderText({
-  model = ml_action()
-  test_data_dtm = test_processing()
-  y_pred = predict(model, as.matrix(test_data_dtm))
-  y_pred
+  # Model CM
+  output$cm = renderPrint({
+    model = ml_action()
+    isolate({
+    features = feProcessing()[[2]]
+    x = features %>% distinct(id, .keep_all = T) %>% select(-word)
+    test_data_dtm = test_processing()
+    y_pred = predict(model, as.matrix(test_data_dtm))
+    #browser()
+    conf_matrix = confusionMatrix(y_pred, factor(x$category))
+    conf_matrix
+    })
+  })
+  
+  # Plot Model
+  output$ml_plot = renderPlot({
+    model = ml_action()
+    #browser()
+    plot(model)
   })
 })
