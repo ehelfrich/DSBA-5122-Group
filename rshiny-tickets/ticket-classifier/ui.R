@@ -69,8 +69,8 @@ shinyUI(
                   sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
                   actionButton(inputId = "rf_run", label = "Run")
               ),
-              box(title = "Model Metrics", textOutput("metrics")),
-              box(title = "Confustion Matrix")
+              box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
+              box(title = "Plot")
              
             )
             )
