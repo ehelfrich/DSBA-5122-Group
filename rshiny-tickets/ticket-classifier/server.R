@@ -12,7 +12,7 @@ library(DT)
 library(Rtsne)
 library(plotly)
 library(glmnet)
-
+library(waiter)
 ######################## Pre-App ####################################
 # Load and reduce DataFrame 
 
@@ -148,6 +148,11 @@ shinyServer(function(input, output) {
   
   # Button to run FE and Plots
   observeEvent(input$FE_run, {
+    
+
+    show_waiter(spin_fading_circles())
+      
+  
     tokens = feProcessing()[[1]]
     # dtm = vectorizerProcessing()[[1]]
     
@@ -155,9 +160,11 @@ shinyServer(function(input, output) {
     output$fe_hist = renderPlot({
       tokens %>%
         count(word, sort = T) %>%
+        filter(n > input$minwords) %>%
         ggplot(aes(x = reorder(word, n), y = n)) +
           geom_col() +
           coord_flip() + 
+        theme(text = element_text(size=input$sizewords)) +
           labs(x='', y='')
     })
     
@@ -175,6 +182,7 @@ shinyServer(function(input, output) {
             colors=brewer.pal(8,"Dark2")
           )
         )
+      hide_waiter()
     })
   })
   
@@ -199,7 +207,10 @@ shinyServer(function(input, output) {
   
   # Action Button Dim Reduction
   dim_action = eventReactive(input$umap_run, {
-    gen()
+    show_waiter(spin_fading_circles())
+    i <- gen()
+    hide_waiter()
+    return(i)
   })
   
   # Plot Dimensionality Reduction
@@ -235,7 +246,10 @@ shinyServer(function(input, output) {
   
   # Action Button ML Run
   ml_action = eventReactive(input$rf_run, {
-    ml_model()
+    show_waiter(spin_fading_circles())
+    i <- ml_model()
+    hide_waiter()
+    return(i)
   })
   
   # Model CM
