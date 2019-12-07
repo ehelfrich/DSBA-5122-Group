@@ -148,7 +148,12 @@ shinyServer(function(input, output) {
   
   # Button to run FE and Plots
   observeEvent(input$FE_run, {
-    show_waiter(spin_fading_circles())
+    show_waiter(
+                tagList(
+                  spin_folding_cube(),
+                  span("Loading ...", style = "color:white;")
+                ))
+    
     tokens = feProcessing()[[1]]
     # dtm = vectorizerProcessing()[[1]]
     
@@ -203,7 +208,11 @@ shinyServer(function(input, output) {
   
   # Action Button Dim Reduction
   dim_action = eventReactive(input$umap_run, {
-    show_waiter(spin_fading_circles())
+    show_waiter(
+      tagList(
+        spin_folding_cube(),
+        span("Loading ...", style = "color:white;")
+      ))
     i <- gen()
     hide_waiter()
     return(i)
@@ -242,7 +251,11 @@ shinyServer(function(input, output) {
   
   # Action Button ML Run
   ml_action = eventReactive(input$rf_run, {
-    show_waiter(spin_fading_circles())
+    show_waiter(
+      tagList(
+        spin_folding_cube(),
+        span("Loading ...", style = "color:white;")
+      ))
     i <- ml_model()
     hide_waiter()
     return(i)
