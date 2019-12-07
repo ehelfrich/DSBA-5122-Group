@@ -29,7 +29,11 @@ opts_knit$set(width=75)
 
 ### **Domain Problem**
 
-We explored typical customer ticket classification data in an effort to grasp customer word usage and ticket results. Our domain problem is one for a back-end user/customer service agent to quickly and efficiently classify the problem and resolve the ticket. 
+We explored typical customer ticket classification data in an effort to grasp customer word usage and ticket results. Our domain problem is one for agents who handle service tickets to quickly and efficiently classify the problem and resolve the ticket. 
+
+In a system without an automated classifcation system, agents would hae to assign categories dependent on many variables, such as content and priority, and who to send tickets to. Many times, tickets can be classified incorrectly, which could be caused on accident, faulty information, or when the end user gives up trying to classify the ticket. Once this agent misclassifies the ticket, it is sent on to the next service desk, incorrectly, to fix and therfore wasting precious time for the next handler of the ticket. At a larger company, this happens multiple times a day. 
+
+When an issue ticket is submitted, it has t be processed and routed to the next employee to take action. Agents completing this task must read the actual submitted ticket to declare classification status. Many of these classification sysems are complicated. Out of frustration, many agents decide to "pass the buck" and send the ticket to the next person to handle. By implementing machine learning, a company can refocus it's customer service reps to other areas with minimal oversight in the classification of tickets. 
 
 ### **Data Characterization**
 
@@ -39,11 +43,11 @@ For data about common words used in a customer ticket, we acquired a public use 
 
 ### **Potential Users** 
 
-The application is designed for customer service agent in any kind of field who handles the routing of customer submitted tickets.
+The application is designed for service agents in any kind of field who handles the routing of submitted trouble tickets.
 
 ### **Application Information**
 
-The application is hosted at xxxxx_github
+The application is hosted at https://github.com/ehelfrich/DSBA-5122-Group
 
 ## **Chapter 1: Operations and Data Type Abstraction**
 
@@ -53,7 +57,7 @@ The dataset used for this application was a public use file available on Github.
 
 ### **Data Type Abstraction**
 
-Our shiny application project is to have a multi-step display, with each step being interconnected to the previous step. In the first step, the user has the ability to enter key words into a search field to generate a dataset. The next tab to explore would be the feature enginnering tab, which the user would submit parameters, which will create a word cloud, word count, and the ability to choose a vectoriation method between Term Frequency Inverse Document Frequency (TF-IDF) or using a count vectorizor. Once completed, the user moves on to dimensionality reduction in the next tab. Here, the user chooses the dimensionality method using either UMAP or TF-IDF. Then the user can adjust slider functions to create a _______. The final step is to enter the data into a machine learning using a random forrest matrix and the user will decide the quantity of trees to produce. 
+Our shiny application project is to have a multi-step display, with each step being interconnected to the previous step preparing high-dimensional data for the eventual use in machine learning. In the first step, the user has the ability to enter key words into a search field to generate a dataset. The next tab to explore would be the feature enginnering tab, which the user would submit parameters, which will create a word cloud, word count, and the ability to choose a vectoriation method between Term Frequency Inverse Document Frequency (TF-IDF) or using a count vectorizor. Once completed, the user clicks to dimensionality reduction in the next tab. Here, the user chooses the dimensionality method using either UMAP or TF-IDF. Then the user can adjust slider functions to create selections. The final step is to enter the data into a machine learning using a random forrest matrix and the user will decide the quantity of trees to produce. 
 
 ## **Chapter 2: Visual Encoding & Interaction Design**
 
@@ -63,17 +67,18 @@ Our data is designed to help a customer visualize text classification data. We e
 
 + ![data_exploration](./images/de.JPG)
 
-Once the user has entered the search term, they can go to the feature engineering tab featuring a bar chart and word cloud. The values are encoded based on the selected variables using sliderboards. The sliders will change how many words the aplication is looking at and it will adjust the ranges It will also give the user the ability to specift a minimum word count. Finally, the user will be able to determine wich vectorization method they would like to use between TD-IDF or count vectorizer. 
+Once the user has entered the search term, they can go to the feature engineering tab featuring a bar chart and word cloud. The values are encoded based on the selected variables using sliderboards. The sliders will change how many words the aplication is looking at and it will adjust the ranges It will also give the user the ability to specify a minimum word count. Finally, the user will be able to determine wich vectorization method they would like to use between TD-IDF or count vectorizer. 
 
 + ![Feature Engineering](./images/fe.JPG)
 
-The user can now move on to the next tab using dimenstionality reduction using either UMAP or TSNE in the drop down menu. Choosin the UMAP function whill show the data on an interactive graph of your selected dataset. 
+The user can now move on to the next tab using dimenstionality reduction, by using either UMAP or TSNE in the drop down menu. Dimenstionality reduction is used in cases of a high amount of variables, whih will reduce processing time and makes visualization of data easier. Choosing the UMAP function whil show the data on an interactive graph of your selected dataset. 
 
 + ![Dimenstionality Reduction](./images/dr.JPG)
 
-Talk about ML Solutions here. 
+The final step to automate classification of tickets is machine learning. Our application trains a model using a publically available dataset but can be used on any kind of trouble ticket dataset. Our application uses a support vector machine model. Over time, accuracy increases with the volume of recommendations made. 
 
-+ ![Machine Learning Solutions](./images/ml.JPG)
++ ![Machine Learning Solutions](./images/ml1.JPG)
++ ![Machine Learning Solutions](./images/ml2.JPG)
 
 ### **Interaction Design** 
 
@@ -85,16 +90,16 @@ The application takes advantage of machine learning to help classify tickets and
 
 The Shiny application and application logic are in seperate files. By having them seperated, finding functions to be called by the application is easier to find. Additionally, to speed up the application, we pick and choose which pieces of code to run in the server portion of the application. The suspended code and associated functions will run when the user of the application clicks on the options through the tabs. 
 
-Our data file is quie large at (xxx) creating a possible impact in performance.....(what did we do to make this dataset run faster)
+**Our data file is quie large at (xxx) creating a possible impact in performance.....(what did we do to make this dataset run faster?)**
 
 The use of reactives ensured when the user made selections to the application, the visualiation changed to reflect the choices made by the user. In theory, this should improve the design efficiency. 
 
 ### **Performance** 
 
-I need help on this 
+**I need help on this **
 
 ```
-example
+**example**
 
 ```
 
@@ -102,18 +107,21 @@ example
 
 ### **Who is the User?** 
 
-The application is designed for customer service agent in any kind of field who handles the routing of customer submitted tickets. The app is designed to analyize the free text in the ticket submission and for it to automatically suggest how to route the ticket. 
+The application is designed for a user who manages tickets in any kind of field who handles the routing of customer submitted tickets. The app is designed to analyize the free text in the ticket submission and for it to automatically suggest how to route the ticket. 
 
 ### **Using the Application**
 
-The application is designed to reduce or elimiante the need for manual classification systems. When handling support tickets, the backend user must determine the catagory and urgency of the ticket. Back end agents can spend countless hours classifying and troubleshooting tickets, but many times, the agent will ultimately inappropriately assign the ticket to "other". With text classification using machine learning, we could have the application automatically classify and assign tickets, freeing up backend users for other tasks and duties.  
+The application is designed to reduce or elimiante the need for manual classification systems. When handling support tickets, the user must  determine the catagory and urgency of the ticket. Agents can spend countless hours classifying and troubleshooting tickets, but many times, the agent will ultimately inappropriately assign the ticket to "other". With text classification using machine learning, we could have the application automatically classify and assign tickets, freeing up backend users for other tasks and duties. Additionally, it allows users to discover issues happening in real time on a massive scale.  
 
 ## **Chapter 5: Conclusions**
 
 ### **Future Work** 
 
+When planning the design and scope of this application, we wanted to create an application that could serve a wide variety of audiances looking for efficient methods to handle support tickets. Future work could expand as we refine and develop this code. Machine learning and text classification will continue to experience innovative ideas to improve on for many years in the future. While assigning ticket classification may seen like a benign activity, the results of efficiencies gained would be astronomical. 
+
 ### **What's Next**
 
+For the next iriration, we would like to add python modules to enhance the machine learning aspect of our application. We also would like to discover a dataset with uncensored data to improve the accuracy and design of our own program. We intend to make our plots easier to see and use, which will allow users a greater use if interpretation for their results. As we further develop the application, we recognize it will become more difficult to load and install on other machines. We would like to integrate our application with Docker for the best production pipeline to the application. We can also improve our application by allowing the user to create custom stopwords.  
 
 ## **Appendix**
-Exploratory work nthat didnt' make it into the app. Highlight what we have tried. 
+**Exploratory work nthat didnt' make it into the app. Highlight what we have tried (If Needed)** 
