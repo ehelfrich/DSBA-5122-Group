@@ -148,11 +148,7 @@ shinyServer(function(input, output) {
   
   # Button to run FE and Plots
   observeEvent(input$FE_run, {
-    
-
     show_waiter(spin_fading_circles())
-      
-  
     tokens = feProcessing()[[1]]
     # dtm = vectorizerProcessing()[[1]]
     
@@ -160,7 +156,7 @@ shinyServer(function(input, output) {
     output$fe_hist = renderPlot({
       tokens %>%
         count(word, sort = T) %>%
-        filter(n > input$minwords) %>%
+        filter(n > input$m_words) %>%
         ggplot(aes(x = reorder(word, n), y = n)) +
           geom_col() +
           coord_flip() + 

@@ -38,7 +38,7 @@ shinyUI(
                               box(title = "Parameters", height = 525,
                                   checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
                                   sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
-                                  sliderInput(inputId="minwords", label="Minimum words for Counts Chart:", min = 300, max = 600, value = 500),
+                                  sliderInput(inputId="m_words", label="Minimum words for Counts Chart:", min = 300, max = 600, value = 500),
                                   sliderInput(inputId="sizewords", label = "Word size for Counts Chart:", min = 8, max = 30, value = 14),
                                   selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
                                   
