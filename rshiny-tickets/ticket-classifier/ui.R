@@ -2,6 +2,10 @@ library(shinydashboard)
 library(shinythemes)
 library(devtools)
 library(htmlwidgets)
+<<<<<<< HEAD
+=======
+library(waiter)
+>>>>>>> 7ecec0db065d1786545efb261b19bc0282906220
 vectors <- list("TF-IDF", "Count Vectorizer")
 feature <- list("UMAP", "TSNE")
 machinelearning <- list("Logistic Regression", "Random Forest")
@@ -17,7 +21,12 @@ shinyUI(
                     menuItem("Data Exploration", tabName = "dataexploration", icon = icon("search")),
                     menuItem("Feature Engineering", tabName = "featengineering", icon = icon("cogs")),
                     menuItem("Dimensionality Reduction", tabName = "dimreduction", icon = icon("coins")),
+<<<<<<< HEAD
                     menuItem("Machine Learning", tabName = "machinelearning", icon = icon("brain"))
+=======
+                    menuItem("Machine Learning", tabName = "machinelearning", icon = icon("brain")),
+                    menuItem("Contact", tabName = "contact", icon = icon("id-card"))
+>>>>>>> 7ecec0db065d1786545efb261b19bc0282906220
                   )
                 ),
                 dashboardBody(
@@ -38,6 +47,13 @@ shinyUI(
                                   checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
                                   sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
                                   selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
+                              box(title = "Parameters", height = 525,
+                                  checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
+                                  sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
+                                  sliderInput(inputId="m_words", label="Minimum words for Counts Chart:", min = 300, max = 600, value = 500),
+                                  sliderInput(inputId="sizewords", label = "Word size for Counts Chart:", min = 8, max = 30, value = 14),
+                                  selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
+                                  use_waiter(),
                                   actionButton(inputId= "FE_run", label = "Run")
                               ),
                               box(width = 6,title = "Word Counts", height = 500, plotOutput('fe_hist')),
@@ -46,6 +62,8 @@ shinyUI(
                                   , collapsible = T, width = 12
                                   , column( 12,align="center" , plotOutput('fe_cloud'))) 
                               # box(title = "Word Cloud", column(8, align ="center", plotOutput('fe_cloud'))),
+
+                                  , column( 12,align="center" , plotOutput('fe_cloud')))
                             )),
                     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
                             selectInput(inputId="dimmethod", label = "Select Dimensionality Method: ", choices = feature),
@@ -64,19 +82,22 @@ shinyUI(
                               box(title = "Plot", plotOutput("dim_plot"), height = 578, width = 8)
                             )),
                     tabItem(h1("Machine Learning"), tabName = "machinelearning",
-                            #fluidRow(
-                            # box(title = "Random Forest Hyperparameters",
-                            #      sliderInput(inputId = "rf__num_trees", label = "Number of Trees", min = 1, max = 50, step = 1, value = 10),
-                            #      actionButton(inputId = "rf_run", label = "Run")
-                            #  ),
                             sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
                             actionButton(inputId = "rf_run", label = "Run"),
                             fluidRow(   
                               box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
                               box(title = "Plot", plotOutput("ml_plot"), column = 6, align = "left", height = 500)
-                              
-                              
-                            ))
+                            )),
+                    tabItem(h1("Contact"), tabName = "contact",
+                            HTML(
+                              "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
+                              Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
+                              Git Hub: https://github.com/ehelfrich/DSBA-5122-Group"
+                            ),
+   
+
+                            )
+                    
                   )
                 )
   ))
