@@ -2,10 +2,7 @@ library(shinydashboard)
 library(shinythemes)
 library(devtools)
 library(htmlwidgets)
-<<<<<<< HEAD
-=======
 library(waiter)
->>>>>>> 7ecec0db065d1786545efb261b19bc0282906220
 vectors <- list("TF-IDF", "Count Vectorizer")
 feature <- list("UMAP", "TSNE")
 machinelearning <- list("Logistic Regression", "Random Forest")
@@ -21,12 +18,8 @@ shinyUI(
                     menuItem("Data Exploration", tabName = "dataexploration", icon = icon("search")),
                     menuItem("Feature Engineering", tabName = "featengineering", icon = icon("cogs")),
                     menuItem("Dimensionality Reduction", tabName = "dimreduction", icon = icon("coins")),
-<<<<<<< HEAD
-                    menuItem("Machine Learning", tabName = "machinelearning", icon = icon("brain"))
-=======
                     menuItem("Machine Learning", tabName = "machinelearning", icon = icon("brain")),
                     menuItem("Contact", tabName = "contact", icon = icon("id-card"))
->>>>>>> 7ecec0db065d1786545efb261b19bc0282906220
                   )
                 ),
                 dashboardBody(
@@ -43,10 +36,6 @@ shinyUI(
                             )),
                     tabItem(h1("Feature Engineering"), tabName = "featengineering",
                             fluidRow(
-                              box(title = "Parameters", height = 500,
-                                  checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
-                                  sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
-                                  selectInput(inputId= "vectorizeframe", label = "Select vectorization method", choices = vectors),
                               box(title = "Parameters", height = 525,
                                   checkboxInput(inputId="stopwords", label="Stop Words: ", value=TRUE),
                                   sliderInput(inputId = "minwords", label = "Specify minimum amount of words you want in a ticket: ", min = 0, max = 50, step = 1, value = 10),
@@ -60,9 +49,6 @@ shinyUI(
                               box(title = "Word Cloud"
                                   , status = "primary", solidHeader = F
                                   , collapsible = T, width = 12
-                                  , column( 12,align="center" , plotOutput('fe_cloud'))) 
-                              # box(title = "Word Cloud", column(8, align ="center", plotOutput('fe_cloud'))),
-
                                   , column( 12,align="center" , plotOutput('fe_cloud')))
                             )),
                     tabItem(h1("Dimensionality Reduction"), tabName = "dimreduction",
@@ -94,9 +80,9 @@ shinyUI(
                               Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
                               Git Hub: https://github.com/ehelfrich/DSBA-5122-Group"
                             ),
-   
-
-                            )
+                            
+                            
+                    )
                     
                   )
                 )
