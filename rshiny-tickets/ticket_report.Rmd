@@ -5,6 +5,8 @@ author: "Karan Edikala, Eric Helfrich, Derek Stranton"
 output:
   rmdformats::readthedown:
     highlight: kate
+ 
+  
 ---
 
 ```{r knitr_init, echo=FALSE, cache=FALSE, warning=FALSE}
