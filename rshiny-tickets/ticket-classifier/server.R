@@ -11,7 +11,6 @@ library(splitstackshape)
 library(DT)
 library(Rtsne)
 library(plotly)
-library(glmnet)
 library(waiter)
 ######################## Pre-App ####################################
 # Load and reduce DataFrame 
@@ -35,6 +34,12 @@ sampleData = function(target_data){
   return(reduced)
 }
 
+# Plot Category Colors
+cateogry_colors = brewer.pal(12,"Paired")
+names(cateogry_colors) = levels(factor(data$category))
+color_scale = scale_colour_manual(name = "Category",values = cateogry_colors)
+color_fill = scale_fill_manual(name = "Category",values = cateogry_colors)
+
 ######################## Shiny Server ###############################
 shinyServer(function(input, output) { 
   
@@ -48,7 +53,7 @@ shinyServer(function(input, output) {
   tokenizer = reactive({
     df = data_reduced()
     df_train = df[[1]]
-    df_test = df[[1]]
+    df_test = df[[2]]
     train_tokens = df_train %>%
       unnest_tokens(output = word, input = body)
     test_tokens = df_test %>%
@@ -80,8 +85,10 @@ shinyServer(function(input, output) {
     train_tokens %>%
       count(category) %>%
       add_row(category = 2, n = 0, .before = 3) %>% # add in category 2 since it has 0 tickets
-      ggplot(aes(x=factor(category), y=n)) +
+      mutate(category = factor(category)) %>%
+      ggplot(aes(x=category, y=n, fill = category)) +
       geom_bar(stat = 'identity') +
+      color_scale +
       scale_y_log10() +
       labs(y='log(count)', x='category')})
   
@@ -223,14 +230,70 @@ shinyServer(function(input, output) {
     dimObj = dim_action()
     isolate(
       if(input$dimmethod == "UMAP") {
-        ggplot(data=as_tibble(dimObj$layout), aes(x=V1, y=V2)) +
-          geom_point()
+        plot_data = as_tibble(dimObj$layout) %>%
+          mutate(id = as.numeric(rownames(dimObj$layout))) %>%
+          left_join(data, by = c("id" = "id")) %>%
+          mutate(category = factor(category)) %>%
+          select(V1, V2, id, category)
+        ggplot(data=plot_data, aes(x=V1, y=V2, color = category)) +
+          geom_point() +
+          color_scale
       }
       else if(input$dimmethod == "TSNE") {
-        ggplot(data=as_tibble(dimObj$Y), aes(x=V1, y=V2)) +
-          geom_point()
+        plot_data = feProcessing()[[1]] %>%
+          group_by(id) %>%
+          summarize(num_word = n()) %>% 
+          mutate(V1 = dimObj$Y[,1], V2 = dimObj$Y[,2]) %>% 
+          left_join(data, by = c("id" = "id")) %>%
+          mutate(category = factor(category)) %>%
+          select(V1, V2, id, category)
+        ggplot(data=plot_data, aes(x=V1, y=V2, color = category)) +
+          geom_point() +
+          color_scale
       }
     )
+  })
+  
+  # Bars Chart
+  output$bars = renderPlot({
+    dimObj = dim_action()
+    if(input$dimmethod == "UMAP") {
+      plot_data = as_tibble(dimObj$layout) %>%
+        mutate(id = as.numeric(rownames(dimObj$layout))) %>%
+        left_join(data, by = c("id" = "id")) %>%
+        mutate(category = factor(category)) %>%
+        select(V1, V2, id, category)
+      i = brushedPoints(plot_data, input$dim_plot_brush)
+      if(nrow(i) == 0) {
+        i = plot_data
+      }
+      i %>%
+        count(category) %>%
+        ggplot(aes(x = category, y = n, fill = category)) +
+        geom_col() +
+        labs(x="Category", y = "Count of Tickets") +
+        color_fill
+    }
+    else if(input$dimmethod == "TSNE") {
+      j = feProcessing()
+      plot_data = feProcessing()[[1]] %>%
+        group_by(id) %>%
+        summarize(num_word = n()) %>% 
+        mutate(V1 = dimObj$Y[,1], V2 = dimObj$Y[,2]) %>% 
+        left_join(data, by = c("id" = "id")) %>%
+        mutate(category = factor(category)) %>%
+        select(V1, V2, id, category)
+      i = brushedPoints(plot_data, input$dim_plot_brush)
+      if(nrow(i) == 0) {
+        i = plot_data
+      }
+      i %>%
+        count(category) %>%
+        ggplot(aes(x = category, y = n, fill = category)) +
+        geom_col() +
+        labs(x="Category", y = "Count of Tickets") +
+        color_fill
+    }
   })
   
   #### Machine Learning ####
