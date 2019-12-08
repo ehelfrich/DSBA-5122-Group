@@ -47,6 +47,7 @@ shinyServer(function(input, output) {
   data_reduced = eventReactive(input$data_generate, {
     df_train = sampleData(train_data)
     df_test = test_data
+    browser()
     return(list(df_train, df_test))
   }, ignoreNULL = F)
   
@@ -91,6 +92,17 @@ shinyServer(function(input, output) {
       color_scale +
       scale_y_log10() +
       labs(y='log(count)', x='category')})
+  
+  # Download Master Data Set (cleaned)
+  
+  output$data.csv = downloadHandler(
+    filename = function () {
+      paste("master_data", ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(data, file, row.names = F)
+    }
+  )
   
   #### Feature Engineering ####
   

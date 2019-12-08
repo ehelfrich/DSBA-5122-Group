@@ -27,12 +27,14 @@ shinyUI(
                     tabItem(h1("Business Case"), tabName = "businesscase", paste0("We explored typical customer ticket classification data in an effort to grasp customer word usage and ticket results. Our domain problem is one for agents who handle service tickets to quickly and efficiently classify the problem and resolve the ticket.")),
                     tabItem(h1("Data Exploration"), tabName = "dataexploration",
                             fluidRow(
-                              column(2, actionButton("data_generate", "Generate Data Set")
+                              column(6, actionButton("data_generate", "Generate Training Data Set")
+                              ),
+                              column(6, downloadButton("data.csv", "Download Cleaned Master Data Set")
                               )),
                             fluidRow(
-                              box(width = 6, title = "Data Frame", DT::dataTableOutput('df'), collapsible = T),
-                              box(width = 6, title = "Summary Stats", tableOutput('token_summary')),
-                              box(width = 6, title = "Category Distribution", plotOutput('category_dist'))
+                              box(width = 6, title = "Training Data", DT::dataTableOutput('df'), collapsible = T),
+                              box(width = 6, title = "Training DataSummary Stats", tableOutput('token_summary')),
+                              box(width = 6, title = "Training Data Category Distribution", plotOutput('category_dist'))
                             )),
                     tabItem(h1("Feature Engineering"), tabName = "featengineering",
                             fluidRow(
