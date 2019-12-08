@@ -63,9 +63,12 @@ shinyUI(
                                   sliderInput(inputId = "pca__n_dims", label = "Number of PCA Dimensions", min = 2, max = 200, step = 2, value = 50),
                                   sliderInput(inputId = "pca__perplexity", label = "Perplexity", min = 10, max = 100, step = 5, value = 50),
                                   br(),
-                                  actionButton(inputId="umap_run", label = "Run")
+                                  actionButton(inputId="umap_run", label = "Run"),
+                                  height = 600
                               ),
-                              box(title = "Plot", plotOutput("dim_plot"), height = 578, width = 8)
+                              box(title = "Plot", plotOutput("dim_plot", brush = brushOpts(id = "dim_plot_brush"), height = 500),
+                                  plotOutput("bars", height = 100),
+                                  height = 700, width = 8)
                             )),
                     tabItem(h1("Machine Learning"), tabName = "machinelearning",
                             sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
