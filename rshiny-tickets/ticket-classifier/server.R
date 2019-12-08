@@ -47,7 +47,6 @@ shinyServer(function(input, output) {
   data_reduced = eventReactive(input$data_generate, {
     df_train = sampleData(train_data)
     df_test = test_data
-    browser()
     return(list(df_train, df_test))
   }, ignoreNULL = F)
   
@@ -344,7 +343,6 @@ shinyServer(function(input, output) {
     x = features %>% distinct(id, .keep_all = T) %>% select(-word)
     test_data_dtm = test_processing()
     y_pred = predict(model, as.matrix(test_data_dtm))
-    #browser()
     conf_matrix = confusionMatrix(y_pred, factor(x$category))
     conf_matrix
     })
@@ -353,7 +351,6 @@ shinyServer(function(input, output) {
   # Plot Model
   output$ml_plot = renderPlot({
     model = ml_action()
-    #browser()
     plot(model)
   })
   

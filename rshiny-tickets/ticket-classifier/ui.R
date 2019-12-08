@@ -24,7 +24,9 @@ shinyUI(
                 ),
                 dashboardBody(
                   tabItems(
-                    tabItem(h1("Business Case"), tabName = "businesscase", paste0("We explored typical customer ticket classification data in an effort to grasp customer word usage and ticket results. Our domain problem is one for agents who handle service tickets to quickly and efficiently classify the problem and resolve the ticket.")),
+                    tabItem(h1("Business Case"), tabName = "businesscase", paste0("We explored typical customer ticket classification data to grasp customer word usage and ticket results. Our domain problem is one for agents who handle service tickets to quickly and efficiently classify the problem and resolve the ticket.
+This application was created to showcase the concept of this model, using a data science team approach, to demonstrate machine learning pipeline operations for a decision-making audience.  The result will allow decision makers to determine if the feature engineering steps and model results are a worth-while investment to “productionize” the pipeline.
+")),
                     tabItem(h1("Data Exploration"), tabName = "dataexploration",
                             fluidRow(
                               column(6, actionButton("data_generate", "Generate Training Data Set")
