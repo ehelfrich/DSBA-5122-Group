@@ -344,4 +344,11 @@ shinyServer(function(input, output) {
     #browser()
     plot(model)
   })
+  
+  # Save Model to rds File
+  output$savedmodel.rds = downloadHandler(filename = paste("saved_model", ".rds", sep=""), 
+                                          content = function(file) {
+                                            saveRDS(ml_action(), file)
+                                          }
+                          )
 })

@@ -71,8 +71,14 @@ shinyUI(
                                   height = 700, width = 8)
                             )),
                     tabItem(h1("Machine Learning"), tabName = "machinelearning",
-                            sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
-                            actionButton(inputId = "rf_run", label = "Run"),
+                            fluidRow(
+                              box(title = "Model Parameters",  
+                                  sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
+                                  actionButton(inputId = "rf_run", label = "Run")
+                              ),
+                              box(title = "Download Model",
+                                  downloadButton(outputId = "savedmodel.rds", label = "Download Best Model"))
+                            ),
                             fluidRow(   
                               box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
                               box(title = "Plot", plotOutput("ml_plot"), column = 6, align = "left", height = 500)
@@ -82,11 +88,10 @@ shinyUI(
                               "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
                               Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
                               Git Hub: https://github.com/ehelfrich/DSBA-5122-Group"
-                            ),
-   
-
                             )
+                    )
                     
                   )
                 )
-  ))
+    )
+  )
