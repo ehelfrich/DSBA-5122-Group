@@ -24,15 +24,19 @@ shinyUI(
                 ),
                 dashboardBody(
                   tabItems(
-                    tabItem(h1("Business Case"), tabName = "businesscase", paste0("The business problem is that")),
+                    tabItem(h1("Business Case"), tabName = "businesscase", paste0("We explored typical customer ticket classification data to grasp customer word usage and ticket results. Our domain problem is one for agents who handle service tickets to quickly and efficiently classify the problem and resolve the ticket.
+This application was created to showcase the concept of this model, using a data science team approach, to demonstrate machine learning pipeline operations for a decision-making audience.  The result will allow decision makers to determine if the feature engineering steps and model results are a worth-while investment to “productionize” the pipeline.
+")),
                     tabItem(h1("Data Exploration"), tabName = "dataexploration",
                             fluidRow(
-                              column(2, actionButton("data_generate", "Generate Data Set")
+                              column(6, actionButton("data_generate", "Generate Training Data Set")
+                              ),
+                              column(6, downloadButton("data.csv", "Download Cleaned Master Data Set")
                               )),
                             fluidRow(
-                              box(width = 6, title = "Data Frame", DT::dataTableOutput('df'), collapsible = T),
-                              box(width = 6, title = "Summary Stats", tableOutput('token_summary')),
-                              box(width = 6, title = "Category Distribution", plotOutput('category_dist'))
+                              box(width = 6, title = "Training Data", DT::dataTableOutput('df'), collapsible = T),
+                              box(width = 6, title = "Training DataSummary Stats", tableOutput('token_summary')),
+                              box(width = 6, title = "Training Data Category Distribution", plotOutput('category_dist'))
                             )),
                     tabItem(h1("Feature Engineering"), tabName = "featengineering",
                             fluidRow(
@@ -63,13 +67,22 @@ shinyUI(
                                   sliderInput(inputId = "pca__n_dims", label = "Number of PCA Dimensions", min = 2, max = 200, step = 2, value = 50),
                                   sliderInput(inputId = "pca__perplexity", label = "Perplexity", min = 10, max = 100, step = 5, value = 50),
                                   br(),
-                                  actionButton(inputId="umap_run", label = "Run")
+                                  actionButton(inputId="umap_run", label = "Run"),
+                                  height = 600
                               ),
-                              box(title = "Plot", plotOutput("dim_plot"), height = 578, width = 8)
+                              box(title = "Plot", plotOutput("dim_plot", brush = brushOpts(id = "dim_plot_brush"), height = 500),
+                                  plotOutput("bars", height = 100),
+                                  height = 700, width = 8)
                             )),
                     tabItem(h1("Machine Learning"), tabName = "machinelearning",
-                            sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
-                            actionButton(inputId = "rf_run", label = "Run"),
+                            fluidRow(
+                              box(title = "Model Parameters",  
+                                  sliderInput(inputId = "rf__num_trees", label = "Random Forest - Choose Number of Trees", min = 1, max = 50, step = 1, value = 2),
+                                  actionButton(inputId = "rf_run", label = "Run")
+                              ),
+                              box(title = "Download Model",
+                                  downloadButton(outputId = "savedmodel.rds", label = "Download Best Model"))
+                            ),
                             fluidRow(   
                               box(title = "Random Forest Metrics", verbatimTextOutput("cm")),
                               box(title = "Plot", plotOutput("ml_plot"), column = 6, align = "left", height = 500)
@@ -79,11 +92,10 @@ shinyUI(
                               "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
                               Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
                               Git Hub: https://github.com/ehelfrich/DSBA-5122-Group"
-                            ),
-                            
-                            
+                            )
                     )
                     
                   )
                 )
-  ))
+    )
+  )
