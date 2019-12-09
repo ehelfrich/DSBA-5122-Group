@@ -88,14 +88,16 @@ This application was created to showcase the concept of this model, using a data
                               box(title = "Plot", plotOutput("ml_plot"), column = 6, align = "left", height = 500)
                             )),
                     tabItem(h1("Contact"), tabName = "contact",
-                            HTML(
-                              "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
-                              Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
-                              Git Hub: https://github.com/ehelfrich/DSBA-5122-Group"
-                            )
+                            fluidRow(
+                              HTML(
+                                "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
+                                Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
+                                Git Hub: https://github.com/ehelfrich/DSBA-5122-Group <br>
+                                Final Report: https://github.com/ehelfrich/DSBA-5122-Group/blob/master/rshiny-tickets/ticket_report.html"
+                              )
                     )
                     
                   )
                 )
     )
-  )
+))
