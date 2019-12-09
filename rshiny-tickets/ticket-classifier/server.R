@@ -167,10 +167,10 @@ shinyServer(function(input, output) {
   # Button to run FE and Plots
   observeEvent(input$FE_run, {
     show_waiter(
-                tagList(
-                  spin_folding_cube(),
-                  span("Loading ...", style = "color:white;")
-                ))
+      tagList(
+        spin_folding_cube(),
+        span("Loading ...", style = "color:white;")
+      ))
     
     tokens = feProcessing()[[1]]
     # dtm = vectorizerProcessing()[[1]]
@@ -181,10 +181,10 @@ shinyServer(function(input, output) {
         count(word, sort = T) %>%
         filter(n > input$m_words) %>%
         ggplot(aes(x = reorder(word, n), y = n)) +
-          geom_col() +
-          coord_flip() + 
+        geom_col() +
+        coord_flip() + 
         theme(text = element_text(size=input$sizewords)) +
-          labs(x='', y='')
+        labs(x='', y='')
     })
     
     # Word Cloud
@@ -310,11 +310,11 @@ shinyServer(function(input, output) {
   #### Machine Learning ####
   # Model Run
   ml_model = reactive({
-      dtm_train = vectorizerProcessing()[[1]]
-      features = feProcessing()[[1]]
-      x = features %>% distinct(id, .keep_all = T) %>% select(-word)
-      ctrl = trainControl(method = 'cv', number=3, verboseIter = F)
-      rf = train(x = as.matrix(dtm_train), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
+    dtm_train = vectorizerProcessing()[[1]]
+    features = feProcessing()[[1]]
+    x = features %>% distinct(id, .keep_all = T) %>% select(-word)
+    ctrl = trainControl(method = 'cv', number=3, verboseIter = F)
+    rf = train(x = as.matrix(dtm_train), y = factor(x$category), method = "ranger", num.trees=input$rf__num_trees, trControl = ctrl)
     return(rf)
   })
   
