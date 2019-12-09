@@ -12,3 +12,6 @@
 
 ## View PPT presentation material for class
 1) Open the 5122_Presentation_V3.pptx in the directory to view the presentation materials that will be used in class.
+
+## Acknowledgements
+The dataset was pulled from https://github.com/karolzak/support-tickets-classification.  The data can be pulled from this URL: https://privdatastorage.blob.core.windows.net/github/support-tickets-classification/datasets/all_tickets.csv
