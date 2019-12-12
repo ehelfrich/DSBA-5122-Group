@@ -183,12 +183,9 @@ shinyUI(dashboardPage(
             title = "Plot",
             plotOutput(
               "dim_plot",
-              brush = brushOpts(id = "dim_plot_brush"),
-              height = 500
+              brush = brushOpts(id = "dim_plot_brush")
             ),
-            plotOutput("bars", height = 200),
-            height = 700,
-            width = 8
+            plotOutput("bars", height = 200)
           )
         )
       ),

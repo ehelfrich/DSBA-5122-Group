@@ -336,6 +336,7 @@ shinyServer(function(input, output) {
         ggplot(aes(x = category, y = n, fill = category)) +
         geom_col(width = .1) +
         labs(x="Category", y = "Count of Tickets") +
+        theme(legend.key.size = unit(4,"mm")) +
         color_fill
     }
     else if(input$dimmethod == "TSNE") {
@@ -356,6 +357,7 @@ shinyServer(function(input, output) {
         ggplot(aes(x = category, y = n, fill = category)) +
         geom_col(width = .1) +
         labs(x="Category", y = "Count of Tickets") +
+        theme(legend.key.size = unit(4,"mm")) +
         color_fill
     }
   })
