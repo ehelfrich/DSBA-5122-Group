@@ -141,6 +141,7 @@ shinyUI(dashboardPage(
                   column(12, align = "center" , plotOutput('fe_cloud'))
                 )
               )),
+      #### Dimensionality Reduction Tab ####
       tabItem(
         h1("Dimensionality Reduction"),
         tabName = "dimreduction",
@@ -153,42 +154,28 @@ shinyUI(dashboardPage(
           box(
             title = "Parameters",
             width = 4,
-            strong("UMAP"),
-            sliderInput(
-              inputId = "umap__n_neighbors",
-              label = "nearest neighbors",
-              min = 2,
-              max = 50,
-              step = 1,
-              value = 15
+            conditionalPanel("input.dimmethod == 'UMAP'",
+                             strong("UMAP"),
+                             sliderInput(inputId = "umap__n_neighbors", 
+                                         label = "nearest neighbors", 
+                                         min = 2, max = 50, step = 1, value = 15),
+                             sliderInput(inputId = "umap__min_dist", 
+                                         label = "Minimum Distance", 
+                                         min = 0.0, max = .99, step = .1, value = .25)
             ),
-            sliderInput(
-              inputId = "umap__min_dist",
-              label = "Minimum Distance",
-              min = 0.0,
-              max = .99,
-              step = .1,
-              value = .25
+            conditionalPanel("input.dimmethod == 'TSNE'",
+                             strong("PCA/T-SNE"),
+                             sliderInput(
+                               inputId = "pca__n_dims",
+                               label = "Number of PCA Dimensions",
+                               min = 2, max = 200, step = 2, value = 50
+                             ),
+                             sliderInput(
+                               inputId = "pca__perplexity",
+                               label = "Perplexity",
+                               min = 10, max = 100, step = 5, value = 50
+                             )
             ),
-            br(),
-            strong("PCA/T-SNE"),
-            sliderInput(
-              inputId = "pca__n_dims",
-              label = "Number of PCA Dimensions",
-              min = 2,
-              max = 200,
-              step = 2,
-              value = 50
-            ),
-            sliderInput(
-              inputId = "pca__perplexity",
-              label = "Perplexity",
-              min = 10,
-              max = 100,
-              step = 5,
-              value = 50
-            ),
-            br(),
             actionButton(inputId = "umap_run", label = "Run"),
             height = 600
           ),
@@ -199,7 +186,7 @@ shinyUI(dashboardPage(
               brush = brushOpts(id = "dim_plot_brush"),
               height = 500
             ),
-            plotOutput("bars", height = 100),
+            plotOutput("bars", height = 200),
             height = 700,
             width = 8
           )

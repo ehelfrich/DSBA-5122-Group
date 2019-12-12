@@ -334,7 +334,7 @@ shinyServer(function(input, output) {
       i %>%
         count(category) %>%
         ggplot(aes(x = category, y = n, fill = category)) +
-        geom_col() +
+        geom_col(width = .1) +
         labs(x="Category", y = "Count of Tickets") +
         color_fill
     }
@@ -354,7 +354,7 @@ shinyServer(function(input, output) {
       i %>%
         count(category) %>%
         ggplot(aes(x = category, y = n, fill = category)) +
-        geom_col() +
+        geom_col(width = .1) +
         labs(x="Category", y = "Count of Tickets") +
         color_fill
     }
