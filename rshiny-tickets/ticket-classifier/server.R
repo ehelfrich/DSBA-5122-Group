@@ -61,24 +61,77 @@ shinyServer(function(input, output) {
     return(list(train_tokens, test_tokens))
   })
   
+  # Data Table of Training Set
   output$df = DT::renderDataTable({data_reduced()[[1]]})
   
-  output$token_summary = renderTable({
+  # Summary Table
+  summary_table = reactive({
     tokens = tokenizer()
     train_tokens = tokens[[1]]
-    train_tokens %>%
+    table = train_tokens %>%
       group_by(id) %>%
       summarize(num_word = n(), num_char = sum(nchar(word))) %>% #num_char does not include whitespace
       summarize(average_word_count = mean(num_word),
-                min_word_count = min(num_word),
-                max_word_count = max(num_word),
-                median_word_count = median(num_word),
-                average_character_count = mean(num_char),
-                min_character_count = min(num_char),
-                max_character_count = max(num_char)) %>%
+                train_min_word_count = min(num_word),
+                train_max_word_count = max(num_word),
+                train_median_word_count = median(num_word),
+                train_average_character_count = mean(num_char),
+                train_min_character_count = min(num_char),
+                train_max_character_count = max(num_char)) %>%
       gather()
+    test_tokens = tokens[[2]]
+    table1 = test_tokens %>%
+      group_by(id) %>%
+      summarize(num_word = n(), num_char = sum(nchar(word))) %>% #num_char does not include whitespace
+      summarize(average_word_count = mean(num_word),
+                test_min_word_count = min(num_word),
+                test_max_word_count = max(num_word),
+                test_median_word_count = median(num_word),
+                test_average_character_count = mean(num_char),
+                test_min_character_count = min(num_char),
+                test_max_character_count = max(num_char)) %>%
+      gather()
+    table = bind_rows(table, table1)
+    return(table)
   })
   
+  # Render Boxes
+  output$training_size = renderInfoBox({ # Training Set Size
+    infoBox("Size of Training Set", {
+      train_tokens = tokenizer()[[1]]
+      train_tokens = train_tokens %>% count(n_distinct(id))
+      train_tokens[[1]]
+    }, color = "green")
+  })
+  output$training_avg_count = renderInfoBox({ # Training Set Median Word Count
+    infoBox("Average Word Count of Training Set", {
+      round(summary_table()[[1,2]], 2)
+    }, color = "green")
+  })
+  output$training_median_count = renderInfoBox({ # Training Set Median Word Count
+    infoBox("Median Word Count of Training Set", {
+      round(summary_table()[[4,2]], 2)
+    }, color = "green")
+  })
+  output$test_size = renderInfoBox({ # Test Set Size
+    infoBox("Size of Test Set", {
+      test_tokens = tokenizer()[[2]]
+      test_tokens = test_tokens %>% count(n_distinct(id))
+      test_tokens[[1]]
+    }, color = "purple")
+  })
+  output$test_avg_count = renderInfoBox({ # Test Set Median Word Count
+    infoBox("Average Word Count of Test Set", {
+      round(summary_table()[[8,2]], 2)
+    }, color = "purple")
+  })
+  output$test_median_count = renderInfoBox({ # Test Set Median Word Count
+    infoBox("Median Word Count of Test Set", {
+      round(summary_table()[[11,2]], 2)
+    }, color = "purple")
+  })
+  
+  # Training Set Distribution Plot
   output$category_dist = renderPlot({  
     tokens = tokenizer()
     train_tokens = tokens[[1]]
