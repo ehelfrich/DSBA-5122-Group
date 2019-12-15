@@ -249,14 +249,22 @@ shinyUI(dashboardPage(
         )
       ),
       tabItem(h1("Contact"), tabName = "contact",
-              fluidRow(
-                HTML(
-                  "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton <br>
-                  Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu <br>
-                  Git Hub: https://github.com/ehelfrich/DSBA-5122-Group <br>
-                  Final Report: https://github.com/ehelfrich/DSBA-5122-Group/blob/master/rshiny-tickets/ticket_report.html"
+              fluidRow(box(
+                h2("Sources"),
+                p("The public dataset was pulled from https://github.com/karolzak/support-tickets-classification where it was already cleaned
+                  of any confidential or propritary material."),
+                h2("Code"),
+                p(
+                  "Code and final report is avialable in our GitHub Repo (https://github.com/ehelfrich/DSBA-5122-Group)"
+                ),
+                h2("Group"),
+                p(
+                  "Group Members: Eric Helfrich, Karan Edikala, Derek Stranton"
+                ),
+                p(
+                  "Emails: ehelfri1@uncc.edu, kedikala@uncc.edu, dstranto@uncc.edu"
                 )
-                ))
-                )
-                )
-              ))
+                )))
+              )
+    )
+  ))
